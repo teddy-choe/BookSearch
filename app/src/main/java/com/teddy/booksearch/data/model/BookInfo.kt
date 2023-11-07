@@ -1,4 +1,4 @@
-package com.teddy.booksearch.model
+package com.teddy.booksearch.data.model
 
 /**
  * used on Detail Screen

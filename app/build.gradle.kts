@@ -62,6 +62,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation(libs.retrofit)
+    implementation(libs.coil)
 
     // Hilt
     implementation(libs.hilt)
