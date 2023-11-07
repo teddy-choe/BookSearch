@@ -1,4 +1,4 @@
-package com.teddy.booksearch
+package com.teddy.booksearch.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,26 +13,28 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.teddy.booksearch.model.Book
+import com.teddy.booksearch.search.SearchViewModel.UiState
 
 @Composable
-fun SearchRoute() {
-    SearchScreen(listOf())
+fun SearchRoute(viewModel: SearchViewModel = hiltViewModel()) {
+    val uiState = viewModel.uiState.collectAsState().value
+    SearchScreen(uiState)
 }
 
 @Composable
 fun SearchScreen(
-    list: List<Book>
+    uiState: UiState
 ) {
     SearchBar(
         modifier = Modifier
@@ -41,8 +43,18 @@ fun SearchScreen(
         onSearch = {}
     )
     Spacer(modifier = Modifier.height(24.dp))
-    LazyColumn() {
-        items(list) {
+
+    when(uiState) {
+        is UiState.Success -> {
+            LazyColumn() {
+                items(uiState.books) {
+
+                }
+            }
+
+        }
+
+        else -> {
 
         }
     }

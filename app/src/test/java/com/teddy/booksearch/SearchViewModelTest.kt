@@ -1,5 +1,6 @@
 package com.teddy.booksearch
 
+import com.teddy.booksearch.search.SearchViewModel
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
