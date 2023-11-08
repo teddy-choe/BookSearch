@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -50,7 +51,7 @@ fun SearchRoute(viewModel: SearchViewModel = hiltViewModel()) {
         books = books,
         uiEvent = viewModel.uiEvent,
         onSearch = viewModel::search
-        )
+    )
 }
 
 @Composable
@@ -63,7 +64,15 @@ fun SearchScreen(
 
     LaunchedEffect(Unit) {
         uiEvent.collectLatest {
-            Toast.makeText(context, "query is empty", Toast.LENGTH_SHORT).show()
+            when(it) {
+                is UiEvent.QueryEmpty -> {
+                    Toast.makeText(context, "query is empty", Toast.LENGTH_SHORT).show()
+                }
+
+                is UiEvent.InvalidQuery -> {
+                    Toast.makeText(context, "invalid query format", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -138,9 +147,9 @@ fun BookItem(book: Book) {
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .fillMaxWidth()
-            .height(200.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.background)
+            .shadow(1.dp)
     ) {
         Row(
             Modifier
@@ -152,7 +161,7 @@ fun BookItem(book: Book) {
                 contentDescription = "book's image",
                 modifier = Modifier
                     .padding(8.dp)
-                    .height(200.dp)
+                    .height(160.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
 
@@ -169,7 +178,6 @@ fun BookItem(book: Book) {
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = book.subtitle,
@@ -183,8 +191,6 @@ fun BookItem(book: Book) {
                     fontWeight = FontWeight.SemiBold,
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = book.price,
                     modifier = Modifier
@@ -196,6 +202,19 @@ fun BookItem(book: Book) {
                     ),
                     fontWeight = FontWeight.SemiBold
                 )
+
+                Text(
+                    text = book.url,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp),
+                    maxLines = 6,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = Color.LightGray
+                    ),
+                    fontWeight = FontWeight.SemiBold
+                )
+
 
             }
         }

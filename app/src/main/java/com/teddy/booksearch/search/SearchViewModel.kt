@@ -9,6 +9,7 @@ import com.teddy.booksearch.data.model.Book
 import com.teddy.booksearch.data.repository.BookRepository
 import com.teddy.booksearch.util.minusRegex
 import com.teddy.booksearch.util.orRegex
+import com.teddy.booksearch.util.searchRegex
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,53 +34,64 @@ class SearchViewModel @Inject constructor(
 
     fun search(query: String) {
         viewModelScope.launch {
-            if (query.isEmpty()) {
-                _uiEvent.emit(UiEvent.QueryEmpty)
-                return@launch
-            }
+            when {
+                searchRegex.matches(query) -> {
+                    bookRepository.searchBooks(query)
+                        .cachedIn(viewModelScope)
+                        .collect { result ->
+                            _books.update {
+                                result
+                            }
+                        }
+                }
 
-            if (orRegex.matches(query)) {
-                val split = query.split("|")
-                val preQuery = split[0]
-                val postQuery = split[1]
+                orRegex.matches(query) -> {
+                    val split = query.split("|")
+                    val preQuery = split[0]
+                    val postQuery = split[1]
 
-                bookRepository.searchBooks(preQuery, postQuery)
-                    .cachedIn(viewModelScope)
-                    .collect { result ->
-                        _books.update {
-                            result
+                    bookRepository.searchBooks(preQuery, postQuery)
+                        .cachedIn(viewModelScope)
+                        .collect { result ->
+                            _books.update {
+                                result
+                            }
                         }
-                    }
-            } else if (minusRegex.matches(query)) {
-                val split = query.split("-")
-                val preQuery = split[0]
-                val postQuery = split[1]
+                }
 
-                bookRepository.searchBooks(preQuery)
-                    .map { result ->
-                        result.filter {
-                            !it.title.lowercase().contains(postQuery.lowercase())
+                minusRegex.matches(query) -> {
+                    val split = query.split("-")
+                    val preQuery = split[0]
+                    val postQuery = split[1]
+
+                    bookRepository.searchBooks(preQuery)
+                        .map { result ->
+                            result.filter {
+                                !it.title.lowercase().contains(postQuery.lowercase())
+                            }
                         }
-                    }
-                    .cachedIn(viewModelScope)
-                    .collect { filteredResult ->
-                        _books.update {
-                            filteredResult
+                        .cachedIn(viewModelScope)
+                        .collect { filteredResult ->
+                            _books.update {
+                                filteredResult
+                            }
                         }
-                    }
-            } else {
-                bookRepository.searchBooks(query)
-                    .cachedIn(viewModelScope)
-                    .collect { result ->
-                        _books.update {
-                            result
-                        }
-                    }
+
+                }
+
+                query.isEmpty() -> {
+                    _uiEvent.emit(UiEvent.QueryEmpty)
+                }
+
+                else -> {
+                    _uiEvent.emit(UiEvent.InvalidQuery)
+                }
             }
         }
     }
 
     sealed interface UiEvent {
         object QueryEmpty: UiEvent
+        object InvalidQuery: UiEvent
     }
 }
