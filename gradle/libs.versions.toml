@@ -15,9 +15,11 @@ material = "1.10.0"
 constraintlayout = "2.1.4"
 retrofit = "2.9.0"
 mockk = "1.13.8"
-hilt = "2.45"
+hilt = "2.48"
 compose-hilt-navigation = "1.1.0"
 coil = "2.5.0"
+compose-paging = "3.2.1"
+okhttp-logging = "4.10.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -35,6 +37,9 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3", 
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "compose-paging" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp-logging" }
+gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }

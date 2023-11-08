@@ -63,6 +63,9 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation(libs.retrofit)
     implementation(libs.coil)
+    implementation(libs.compose.paging)
+    implementation(libs.okhttp.logging)
+    implementation(libs.gson)
 
     // Hilt
     implementation(libs.hilt)
