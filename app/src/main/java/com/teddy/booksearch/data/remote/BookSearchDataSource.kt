@@ -14,12 +14,13 @@ class BookSearchDataSource(
         try {
             val nextPage = params.key ?: 1
             val response = bookService.getSearchBookList(query = query, page = nextPage)
+            val endOfPagination = response.books.isEmpty()
             return LoadResult.Page(
                 data = response.books,
                 prevKey =
                 if (nextPage == 1) null
                 else nextPage - 1,
-                nextKey = nextPage.plus(1)
+                nextKey = if (endOfPagination) null else nextPage.plus(1)
             )
 
         } catch (t: Throwable) {
