@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BookRepository @Inject constructor(
-    val bookService: BookService
+    private val bookService: BookService
 ) {
-    fun searchBooks(query: String): Flow<PagingData<Book>> {
+    fun searchBooks(vararg query: String): Flow<PagingData<Book>> {
         val config = PagingConfig(
             pageSize = 20,
             enablePlaceholders = true,
@@ -20,7 +20,7 @@ class BookRepository @Inject constructor(
         )
 
         return Pager(config) {
-            BookSearchDataSource(query, bookService)
+            BookSearchDataSource(queryList = query, bookService = bookService)
         }.flow
     }
 
