@@ -1,4 +1,4 @@
-package com.teddy.booksearch.detail
+package com.teddy.booksearch.presentation.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height

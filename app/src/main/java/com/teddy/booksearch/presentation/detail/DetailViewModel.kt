@@ -1,4 +1,4 @@
-package com.teddy.booksearch.detail
+package com.teddy.booksearch.presentation.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

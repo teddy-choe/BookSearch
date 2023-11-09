@@ -1,4 +1,4 @@
-package com.teddy.booksearch.search
+package com.teddy.booksearch.presentation.search
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -40,7 +40,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.teddy.booksearch.data.model.Book
-import com.teddy.booksearch.search.SearchViewModel.UiEvent
+import com.teddy.booksearch.presentation.search.SearchViewModel.UiEvent
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 

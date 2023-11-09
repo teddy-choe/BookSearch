@@ -14,9 +14,9 @@ class BookRepository @Inject constructor(
 ) {
     fun searchBooks(vararg query: String): Flow<PagingData<Book>> {
         val config = PagingConfig(
-            pageSize = 20,
+            pageSize = 10,
             enablePlaceholders = true,
-            prefetchDistance = 5
+            prefetchDistance = 10
         )
 
         return Pager(config) {

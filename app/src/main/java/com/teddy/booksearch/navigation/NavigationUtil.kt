@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.teddy.booksearch.detail.DetailRoute
-import com.teddy.booksearch.search.SearchRoute
+import com.teddy.booksearch.presentation.detail.DetailRoute
+import com.teddy.booksearch.presentation.search.SearchRoute
 
 fun NavGraphBuilder.searchScreen(navController: NavController) {
     composable(route = "search") {

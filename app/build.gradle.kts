@@ -59,8 +59,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.navigation.compose)
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.retrofit)
     implementation(libs.coil)
     implementation(libs.compose.paging)
@@ -77,9 +76,4 @@ dependencies {
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

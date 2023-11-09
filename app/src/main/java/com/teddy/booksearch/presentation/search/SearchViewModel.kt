@@ -1,4 +1,4 @@
-package com.teddy.booksearch.search
+package com.teddy.booksearch.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
