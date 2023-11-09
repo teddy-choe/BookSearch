@@ -2,6 +2,7 @@ package com.teddy.booksearch.search
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,13 +45,17 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun SearchRoute(viewModel: SearchViewModel = hiltViewModel()) {
+fun SearchRoute(
+    viewModel: SearchViewModel = hiltViewModel(),
+    onBookClicked: (isbn13: String) -> Unit
+) {
     val books = viewModel.books.collectAsLazyPagingItems()
 
     SearchScreen(
         books = books,
         uiEvent = viewModel.uiEvent,
-        onSearch = viewModel::search
+        onSearch = viewModel::search,
+        onBookClicked = onBookClicked
     )
 }
 
@@ -58,7 +63,8 @@ fun SearchRoute(viewModel: SearchViewModel = hiltViewModel()) {
 fun SearchScreen(
     books: LazyPagingItems<Book>,
     uiEvent: SharedFlow<UiEvent>,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onBookClicked: (isbn13: String) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -89,7 +95,8 @@ fun SearchScreen(
             items(books.itemCount) { index ->
                 books[index]?.let {
                     BookItem(
-                        book = it
+                        book = it,
+                        onBookClicked = onBookClicked
                     )
                 }
             }
@@ -124,7 +131,7 @@ fun SearchBar(
             maxLines = 1,
             singleLine = true,
             modifier = modifier
-                .background(Color.LightGray, CircleShape)
+                .shadow(1.dp)
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
                     isHintDisplayed = it.isFocused == false
@@ -142,7 +149,10 @@ fun SearchBar(
 }
 
 @Composable
-fun BookItem(book: Book) {
+fun BookItem(
+    book: Book,
+    onBookClicked: (isbn13: String) -> Unit
+) {
     Box(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -150,6 +160,9 @@ fun BookItem(book: Book) {
             .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.background)
             .shadow(1.dp)
+            .clickable {
+                onBookClicked(book.isbn13)
+            }
     ) {
         Row(
             Modifier

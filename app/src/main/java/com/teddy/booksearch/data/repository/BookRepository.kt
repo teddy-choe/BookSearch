@@ -24,8 +24,6 @@ class BookRepository @Inject constructor(
         }.flow
     }
 
-    fun getBookDetail(isbn13: String) {
-        TODO("Not yet implemented")
-    }
-
+    suspend fun getBookDetail(isbn13: String) =
+        bookService.getBookDetail(isbn13)
 }

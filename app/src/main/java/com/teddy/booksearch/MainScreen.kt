@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.teddy.booksearch.navigation.detailScreen
 import com.teddy.booksearch.navigation.searchScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -27,6 +28,7 @@ private fun MainScreenNavigationConfigurations(
         navController = navController,
         startDestination = "search"
     ) {
-        searchScreen()
+        searchScreen(navController)
+        detailScreen()
     }
 }

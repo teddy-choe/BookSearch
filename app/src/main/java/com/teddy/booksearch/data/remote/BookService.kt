@@ -16,5 +16,5 @@ interface BookService {
     @GET("books/{isbn13}")
     suspend fun getBookDetail(
         @Path("isbn13") isbn13: String
-    ): Flow<BookInfo>
+    ): BookInfo
 }
