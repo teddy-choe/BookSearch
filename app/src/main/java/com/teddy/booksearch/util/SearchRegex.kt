@@ -1,8 +1,8 @@
 package com.teddy.booksearch.util
 
-val searchRegex = """\w+""".toRegex()
-val orRegex = """\w+\|\w+$""".toRegex()
-val minusRegex = """\w+-\w+$""".toRegex()
+val searchRegex = """[a-zA-Z0-9]+""".toRegex()
+val orRegex = """[a-zA-Z0-9]+\|[a-zA-Z0-9]+$""".toRegex()
+val minusRegex = """[a-zA-Z0-9]+-[a-zA-Z0-9]+$""".toRegex()
 
 internal enum class QueryType {
     ONLY_WORDS, OR, MINUS, EMPTY, INVALID

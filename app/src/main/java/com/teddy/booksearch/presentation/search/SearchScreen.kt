@@ -84,7 +84,7 @@ fun SearchScreen(
                 }
 
                 is UiEvent.InvalidQuery -> {
-                    Toast.makeText(context, "invalid query format", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "invalid query format. query must be alphabet or number.", Toast.LENGTH_SHORT).show()
                 }
             }
         }

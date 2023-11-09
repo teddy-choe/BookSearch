@@ -52,6 +52,10 @@ class SearchViewModel @Inject constructor(
                             _books.update {
                                 result
                             }
+
+                            _uiState.update {
+                                UiState.Success
+                            }
                         }
                 }
 
@@ -65,6 +69,10 @@ class SearchViewModel @Inject constructor(
                         .collect { result ->
                             _books.update {
                                 result
+                            }
+
+                            _uiState.update {
+                                UiState.Success
                             }
                         }
 
@@ -86,15 +94,25 @@ class SearchViewModel @Inject constructor(
                             _books.update {
                                 filteredResult
                             }
+
+                            _uiState.update {
+                                UiState.Success
+                            }
                         }
                 }
 
                 EMPTY -> {
                     _uiEvent.emit(UiEvent.QueryEmpty)
+                    _uiState.update {
+                        UiState.Empty
+                    }
                 }
 
                 INVALID -> {
                     _uiEvent.emit(UiEvent.InvalidQuery)
+                    _uiState.update {
+                        UiState.Error
+                    }
                 }
             }
         }
