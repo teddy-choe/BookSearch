@@ -22,10 +22,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -33,14 +35,17 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.teddy.booksearch.data.model.Book
 import com.teddy.booksearch.presentation.search.SearchViewModel.UiEvent
+import com.teddy.booksearch.presentation.search.SearchViewModel.UiState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -50,9 +55,11 @@ fun SearchRoute(
     onBookClicked: (isbn13: String) -> Unit
 ) {
     val books = viewModel.books.collectAsLazyPagingItems()
+    val uiState = viewModel.uiState.collectAsState().value
 
     SearchScreen(
         books = books,
+        uiState = uiState,
         uiEvent = viewModel.uiEvent,
         onSearch = viewModel::search,
         onBookClicked = onBookClicked
@@ -62,6 +69,7 @@ fun SearchRoute(
 @Composable
 fun SearchScreen(
     books: LazyPagingItems<Book>,
+    uiState: UiState,
     uiEvent: SharedFlow<UiEvent>,
     onSearch: (String) -> Unit,
     onBookClicked: (isbn13: String) -> Unit
@@ -70,7 +78,7 @@ fun SearchScreen(
 
     LaunchedEffect(Unit) {
         uiEvent.collectLatest {
-            when(it) {
+            when (it) {
                 is UiEvent.QueryEmpty -> {
                     Toast.makeText(context, "query is empty", Toast.LENGTH_SHORT).show()
                 }
@@ -82,7 +90,7 @@ fun SearchScreen(
         }
     }
 
-    Column {
+    Column(modifier = Modifier.fillMaxSize()) {
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,14 +99,51 @@ fun SearchScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        LazyColumn() {
-            items(books.itemCount) { index ->
-                books[index]?.let {
-                    BookItem(
-                        book = it,
-                        onBookClicked = onBookClicked
+        when (uiState) {
+            is UiState.Empty -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "data is empty",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
+            }
+
+            is UiState.Success -> {
+                LazyColumn() {
+                    items(books.itemCount) { index ->
+                        books.loadState.prepend
+                        books[index]?.let {
+                            BookItem(
+                                book = it,
+                                onBookClicked = onBookClicked
+                            )
+                        }
+                    }
+                }
+
+            }
+
+            is UiState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "error...",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+
             }
         }
     }
