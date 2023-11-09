@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -33,13 +32,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -79,12 +77,12 @@ fun SearchScreen(
     LaunchedEffect(Unit) {
         uiEvent.collectLatest {
             when (it) {
-                is UiEvent.QueryEmpty -> {
-                    Toast.makeText(context, "query is empty", Toast.LENGTH_SHORT).show()
-                }
-
                 is UiEvent.InvalidQuery -> {
-                    Toast.makeText(context, "invalid query format. query must be alphabet or number.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "invalid query format. query must be alphabet or number.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -97,17 +95,16 @@ fun SearchScreen(
                 .padding(16.dp),
             onSearch = onSearch
         )
-        Spacer(modifier = Modifier.height(24.dp))
 
         when (uiState) {
-            is UiState.Empty -> {
+            is UiState.Before -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "data is empty",
-                        style = MaterialTheme.typography.headlineMedium.copy(
+                        text = "search books!",
+                        style = MaterialTheme.typography.headlineSmall.copy(
                             color = Color.Black,
                             fontWeight = FontWeight.Bold
                         )
@@ -116,18 +113,34 @@ fun SearchScreen(
             }
 
             is UiState.Success -> {
-                LazyColumn() {
-                    items(books.itemCount) { index ->
-                        books.loadState.prepend
-                        books[index]?.let {
-                            BookItem(
-                                book = it,
-                                onBookClicked = onBookClicked
+                if (books.itemCount == 0) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "result is empty.",
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
                             )
+                        )
+                    }
+
+                } else {
+                    LazyColumn {
+                        items(books.itemCount) { index ->
+                            books.loadState.prepend
+                            books[index]?.let {
+                                BookItem(
+                                    book = it,
+                                    onBookClicked = onBookClicked
+                                )
+                            }
                         }
                     }
-                }
 
+                }
             }
 
             is UiState.Error -> {
@@ -165,13 +178,21 @@ fun SearchBar(
     Box(
         modifier = modifier
     ) {
+        val context = LocalContext.current
+
         BasicTextField(
             value = text,
             onValueChange = {
                 text = it
             },
             keyboardActions = KeyboardActions(
-                onDone = { onSearch(text) }
+                onDone = {
+                    if (text.isEmpty()) {
+                        Toast.makeText(context, "query is empty", Toast.LENGTH_SHORT).show()
+                    } else {
+                        onSearch(text)
+                    }
+                }
             ),
             maxLines = 1,
             singleLine = true,
@@ -209,14 +230,11 @@ fun BookItem(
                 onBookClicked(book.isbn13)
             }
     ) {
-        Row(
-            Modifier
-                .padding(all = 4.dp)
-                .fillMaxSize()
-        ) {
+        Row(Modifier.padding(all = 4.dp)) {
             AsyncImage(
                 model = book.image,
                 contentDescription = "book's image",
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .padding(8.dp)
                     .height(160.dp)
@@ -225,9 +243,7 @@ fun BookItem(
 
             Column(
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 12.dp)
-                    .fillMaxHeight()
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
             ) {
                 Text(
                     text = book.title,
@@ -237,45 +253,31 @@ fun BookItem(
                     )
                 )
 
-                Text(
-                    text = book.subtitle,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp),
-                    maxLines = 6,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.LightGray
-                    ),
-                    fontWeight = FontWeight.SemiBold,
-                )
+                ContentText(book.subtitle)
 
-                Text(
-                    text = book.price,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp),
-                    maxLines = 6,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.LightGray
-                    ),
-                    fontWeight = FontWeight.SemiBold
-                )
+                ContentText(book.price)
 
-                Text(
-                    text = book.url,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp),
-                    maxLines = 6,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.LightGray
-                    ),
-                    fontWeight = FontWeight.SemiBold
-                )
-
-
+                ContentText(book.url)
             }
         }
     }
+}
+
+@Composable
+fun ContentText(content: String) {
+    if (content.isNotEmpty()) {
+        Text(
+            text = content,
+            modifier = Modifier
+                .padding(vertical = 4.dp),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = Color.LightGray
+            ),
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+
 
 }

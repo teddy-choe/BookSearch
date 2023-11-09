@@ -7,16 +7,11 @@ import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.teddy.booksearch.data.model.Book
 import com.teddy.booksearch.data.repository.BookRepository
-import com.teddy.booksearch.util.QueryType
-import com.teddy.booksearch.util.QueryType.EMPTY
 import com.teddy.booksearch.util.QueryType.INVALID
 import com.teddy.booksearch.util.QueryType.MINUS
 import com.teddy.booksearch.util.QueryType.ONLY_WORDS
 import com.teddy.booksearch.util.QueryType.OR
 import com.teddy.booksearch.util.checkSearchType
-import com.teddy.booksearch.util.minusRegex
-import com.teddy.booksearch.util.orRegex
-import com.teddy.booksearch.util.searchRegex
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +31,7 @@ class SearchViewModel @Inject constructor(
     private val _books: MutableStateFlow<PagingData<Book>> = MutableStateFlow(PagingData.empty())
     val books: StateFlow<PagingData<Book>> = _books.asStateFlow()
 
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Empty)
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Before)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     private val _uiEvent: MutableSharedFlow<UiEvent> = MutableSharedFlow()
@@ -101,13 +96,6 @@ class SearchViewModel @Inject constructor(
                         }
                 }
 
-                EMPTY -> {
-                    _uiEvent.emit(UiEvent.QueryEmpty)
-                    _uiState.update {
-                        UiState.Empty
-                    }
-                }
-
                 INVALID -> {
                     _uiEvent.emit(UiEvent.InvalidQuery)
                     _uiState.update {
@@ -119,13 +107,12 @@ class SearchViewModel @Inject constructor(
     }
 
     sealed interface UiState {
-        object Empty: UiState
+        object Before: UiState
         object Error: UiState
         object Success: UiState
     }
 
     sealed interface UiEvent {
-        object QueryEmpty: UiEvent
         object InvalidQuery: UiEvent
     }
 }

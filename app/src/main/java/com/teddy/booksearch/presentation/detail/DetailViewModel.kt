@@ -17,7 +17,10 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
     private val _bookInfo: MutableStateFlow<BookInfo?> = MutableStateFlow(null)
     val bookInfo: StateFlow<BookInfo?> = _bookInfo.asStateFlow()
 
@@ -33,6 +36,16 @@ class DetailViewModel @Inject constructor(
             _bookInfo.update {
                 result
             }
+
+            _uiState.update {
+                UiState.Success
+            }
         }
+    }
+
+    sealed interface UiState {
+        object Loading : UiState
+        object Success : UiState
+        object Error : UiState
     }
 }

@@ -12,12 +12,12 @@ class BookSearchDataSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
         try {
-            var books = listOf<Book>()
+            val books = mutableListOf<Book>()
             val nextPage = params.key ?: 1
 
             for (query in queryList) {
                 val response = bookService.getSearchBookList(query = query, page = nextPage)
-                books = books.plus(response.books)
+                books.addAll(response.books)
             }
 
             val endOfPagination = books.isEmpty()

@@ -11,12 +11,3 @@ data class Book(
     val image: String,
     val url: String,
 )
-
-fun getDummyBook() = Book(
-    title = "test",
-    subtitle = "test2",
-    isbn13 = "123",
-    price = "123원",
-    image = "https://itbook.store/img/books/9781484206485.png",
-    url = "https://itbook.store/img/books/9781484206485"
-)
