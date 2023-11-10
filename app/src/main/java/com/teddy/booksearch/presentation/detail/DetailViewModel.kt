@@ -32,13 +32,26 @@ class DetailViewModel @Inject constructor(
 
     private fun getBookInfo(isbn13: String) {
         viewModelScope.launch {
-            val result = bookRepository.getBookDetail(isbn13)
-            _bookInfo.update {
-                result
-            }
+            runCatching {
+                bookRepository.getBookDetail(isbn13)
+            }.onSuccess { result ->
+                if (result.error == "0") {
+                    _bookInfo.update {
+                        result
+                    }
 
-            _uiState.update {
-                UiState.Success
+                    _uiState.update {
+                        UiState.Success
+                    }
+                } else {
+                    _uiState.update {
+                        UiState.Error
+                    }
+                }
+            }.onFailure {
+                _uiState.update {
+                    UiState.Error
+                }
             }
         }
     }

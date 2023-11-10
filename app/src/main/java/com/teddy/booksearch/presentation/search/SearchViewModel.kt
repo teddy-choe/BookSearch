@@ -98,9 +98,6 @@ class SearchViewModel @Inject constructor(
 
                 INVALID -> {
                     _uiEvent.emit(UiEvent.InvalidQuery)
-                    _uiState.update {
-                        UiState.Error
-                    }
                 }
             }
         }

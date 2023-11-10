@@ -88,7 +88,20 @@ fun DetailScreen(
             }
 
             is UiState.Error -> {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Text(
+                        text = "error page",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
 
+                }
             }
         }
 
