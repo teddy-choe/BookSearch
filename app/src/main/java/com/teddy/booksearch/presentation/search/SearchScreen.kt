@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -32,6 +33,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.size.Size
+import com.teddy.booksearch.R
 import com.teddy.booksearch.data.model.Book
 import com.teddy.booksearch.presentation.search.SearchViewModel.UiEvent
 import com.teddy.booksearch.presentation.search.SearchViewModel.UiState
@@ -231,9 +236,10 @@ fun BookItem(
             AsyncImage(
                 model = book.image,
                 contentDescription = "book's image",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.FillHeight,
                 modifier = Modifier
                     .padding(8.dp)
+                    .width(100.dp)
                     .height(160.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
